@@ -2,6 +2,7 @@ package com.example.springboot.models;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.UUID;
 
 @Entity
@@ -12,6 +13,7 @@ public class RoomModel implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID idRoom;
+    private BigInteger numberRoom;
     private String clientName;
     private String inDate;
     private String outDate;
@@ -46,5 +48,13 @@ public class RoomModel implements Serializable {
 
     public void setOutDate(String outDate) {
         this.outDate = outDate;
+    }
+
+    public BigInteger getNumberRoom() {
+        return numberRoom;
+    }
+
+    public void setNumberRoom(BigInteger numberRoom) {
+        this.numberRoom = numberRoom;
     }
 }
