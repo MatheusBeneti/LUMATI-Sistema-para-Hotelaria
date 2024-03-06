@@ -16,7 +16,7 @@ public class ClientModel  extends RepresentationModel<ClientModel> implements Se
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID idClient;
-    private Date clientBDay;
+    private Integer clientBDay;
     private String clientName;
     private String clientCPF;
 
@@ -28,11 +28,11 @@ public class ClientModel  extends RepresentationModel<ClientModel> implements Se
         this.idClient = idClient;
     }
 
-    public Date getClientBDay() {
+    public Integer getClientBDay() {
         return clientBDay;
     }
 
-    public void setClientBDay(Date clientBDay) {
+    public void setClientBDay(Integer clientBDay) {
         this.clientBDay = clientBDay;
     }
 
