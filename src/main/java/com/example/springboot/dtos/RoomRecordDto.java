@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import java.math.BigInteger;
 import java.util.UUID;
 
-public record RoomRecordDto(@NotBlank String clientName, @NotBlank String inDate, @NotBlank String outDate, @NotBlank
-                            BigInteger numberRoom) {
+public record RoomRecordDto(@NotBlank String clientName, @NotBlank String inDate, @NotBlank String outDate, @NotNull
+                            Integer numberRoom, @NotBlank String roomType) {
 
 }

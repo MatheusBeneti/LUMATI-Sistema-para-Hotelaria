@@ -1,5 +1,6 @@
 package com.example.springboot.models;
 import jakarta.persistence.*;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.io.Serializable;
 import java.math.BigInteger;
@@ -7,14 +8,15 @@ import java.util.UUID;
 
 @Entity
 @Table (name = "TB ROOMS")
-public class RoomModel implements Serializable {
+public class RoomModel extends RepresentationModel<RoomModel> implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID idRoom;
-    private BigInteger numberRoom;
+    private Integer numberRoom;
     private String clientName;
+    private String roomType;
     private String inDate;
     private String outDate;
 
@@ -50,11 +52,19 @@ public class RoomModel implements Serializable {
         this.outDate = outDate;
     }
 
-    public BigInteger getNumberRoom() {
+    public Integer getNumberRoom() {
         return numberRoom;
     }
 
-    public void setNumberRoom(BigInteger numberRoom) {
+    public void setNumberRoom(Integer numberRoom) {
         this.numberRoom = numberRoom;
+    }
+
+    public String getRoomType() {
+        return roomType;
+    }
+
+    public void setRoomType(String roomType) {
+        this.roomType = roomType;
     }
 }

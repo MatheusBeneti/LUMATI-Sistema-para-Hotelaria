@@ -14,6 +14,9 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.List;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 @RestController
 public class RoomController {
 
@@ -29,7 +32,14 @@ public class RoomController {
 
     @GetMapping("/rooms")
     public ResponseEntity<List<RoomModel>> getAllRooms() {
-        return ResponseEntity.status(HttpStatus.OK).body(roomRepository.findAll());
+        List<RoomModel> roomList = roomRepository.findAll();
+        if(!roomList.isEmpty()){
+            for(RoomModel room : roomList){
+                UUID id = room.getIdRoom();
+                room.add(linkTo(methodOn(RoomController.class).getOneRoom(id)).withSelfRel());
+            }
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(roomList);
     }
 
     @GetMapping("/rooms/{id}")
@@ -38,6 +48,7 @@ public class RoomController {
         if (room0.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Room not found.");
         }
+        room0.get().add(linkTo(methodOn(RoomController.class).getAllRooms()).withRel("Rooms List."));
         return ResponseEntity.status(HttpStatus.OK).body(room0.get());
     }
 
