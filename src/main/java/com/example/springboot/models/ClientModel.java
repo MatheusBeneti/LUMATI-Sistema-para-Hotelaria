@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -15,7 +16,7 @@ public class ClientModel  extends RepresentationModel<ClientModel> implements Se
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID idClient;
-    private Integer clientBDay;
+    private Date clientBDay;
     private String clientName;
     private String clientCPF;
 
@@ -27,11 +28,11 @@ public class ClientModel  extends RepresentationModel<ClientModel> implements Se
         this.idClient = idClient;
     }
 
-    public Integer getClientBDay() {
+    public Date getClientBDay() {
         return clientBDay;
     }
 
-    public void setClientBDay(Integer clientBDay) {
+    public void setClientBDay(Date clientBDay) {
         this.clientBDay = clientBDay;
     }
 
