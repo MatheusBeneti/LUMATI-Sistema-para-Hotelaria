@@ -7,7 +7,7 @@ import java.math.BigInteger;
 import java.util.UUID;
 
 @Entity
-@Table (name = "TB ROOMS")
+@Table (name = "TB_ROOMS")
 public class RoomModel extends RepresentationModel<RoomModel> implements Serializable {
     private static final long serialVersionUID = 1L;
 
