@@ -1,6 +1,8 @@
 package com.example.springboot.controllers;
 
 import com.example.springboot.dtos.RoomRecordDto;
+import com.example.springboot.factory.RoomFactory;
+import com.example.springboot.factory.RoomSimpleFactory;
 import com.example.springboot.models.RoomModel;
 import com.example.springboot.repositories.RoomRepository;
 import jakarta.validation.Valid;
@@ -22,6 +24,22 @@ public class RoomController {
 
     @Autowired
     RoomRepository roomRepository;
+
+    @Autowired
+    private RoomSimpleFactory roomSimpleFactory;
+
+    @PostMapping("/rooms/simple")
+    public ResponseEntity<RoomModel> createSimpleRoom(@RequestBody @Valid RoomRecordDto roomRecordDto) {
+        RoomModel roomModel = roomSimpleFactory.createRoom(roomRecordDto);
+
+        // Assuming successful room creation
+        if (roomModel != null) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(roomModel);
+        } else {
+            // Handle potential room creation failure (optional)
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
 
     @PostMapping("/rooms")
     public ResponseEntity<RoomModel> saveRoom(@RequestBody @Valid RoomRecordDto roomRecordDto) {

@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Entity
 @Table (name = "TB_ROOMS")
-public class RoomModel extends RepresentationModel<RoomModel> implements Serializable {
+public class RoomModel extends RepresentationModel<RoomModel> implements Serializable{
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -19,7 +19,6 @@ public class RoomModel extends RepresentationModel<RoomModel> implements Seriali
     private String roomType;
     private String inDate;
     private String outDate;
-
     public UUID getIdRoom() {
         return idRoom;
     }
