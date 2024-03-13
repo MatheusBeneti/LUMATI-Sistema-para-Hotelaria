@@ -30,6 +30,7 @@ public class RoomController {
         return ResponseEntity.status(HttpStatus.CREATED).body(roomRepository.save(roomModel));
     }
 
+    @CrossOrigin(origins = "http://127.0.0.1:3000/quarto.html")
     @GetMapping("/rooms")
     public ResponseEntity<List<RoomModel>> getAllRooms() {
         List<RoomModel> roomList = roomRepository.findAll();
