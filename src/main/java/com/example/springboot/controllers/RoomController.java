@@ -1,8 +1,7 @@
 package com.example.springboot.controllers;
 
 import com.example.springboot.dtos.RoomRecordDto;
-import com.example.springboot.factory.RoomFactory;
-import com.example.springboot.factory.RoomSimpleFactory;
+import com.example.springboot.factory.RoomCreateFactory;
 import com.example.springboot.models.RoomModel;
 import com.example.springboot.repositories.RoomRepository;
 import jakarta.validation.Valid;
@@ -26,11 +25,11 @@ public class RoomController {
     RoomRepository roomRepository;
 
     @Autowired
-    private RoomSimpleFactory roomSimpleFactory;
+    private RoomCreateFactory roomCreateFactory;
 
-    @PostMapping("/rooms/simple")
+    @PostMapping("/rooms")
     public ResponseEntity<RoomModel> createSimpleRoom(@RequestBody @Valid RoomRecordDto roomRecordDto) {
-        RoomModel roomModel = roomSimpleFactory.createRoom(roomRecordDto);
+        RoomModel roomModel = roomCreateFactory.createRoom(roomRecordDto);
 
         // Assuming successful room creation
         if (roomModel != null) {
@@ -41,12 +40,12 @@ public class RoomController {
         }
     }
 
-    @PostMapping("/rooms")
-    public ResponseEntity<RoomModel> saveRoom(@RequestBody @Valid RoomRecordDto roomRecordDto) {
-        var roomModel = new RoomModel();
-        BeanUtils.copyProperties(roomRecordDto, roomModel);
-        return ResponseEntity.status(HttpStatus.CREATED).body(roomRepository.save(roomModel));
-    }
+//    @PostMapping("/rooms")
+//    public ResponseEntity<RoomModel> saveRoom(@RequestBody @Valid RoomRecordDto roomRecordDto) {
+//        var roomModel = new RoomModel();
+//        BeanUtils.copyProperties(roomRecordDto, roomModel);
+//        return ResponseEntity.status(HttpStatus.CREATED).body(roomRepository.save(roomModel));
+//    }
 
     @GetMapping("/rooms")
     public ResponseEntity<List<RoomModel>> getAllRooms() {

@@ -4,7 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Transient;
 
 @Entity
-public class RoomSimpleModel extends RoomModel {
+public class RoomPresidentialModel extends RoomModel {
     @Transient
     private String dtype;
 
