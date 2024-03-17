@@ -19,6 +19,61 @@ public class RoomModel extends RepresentationModel<RoomModel> implements Seriali
     private String roomType;
     private String inDate;
     private String outDate;
+    private Integer nightlyRate;
+    private Integer serviceFee;
+    private Integer penthouseFee;
+    private String clientCPF;
+    private ClientModel client;
+    private boolean isOccupied = false;
+
+    public boolean isOccupied() {
+        return isOccupied;
+    }
+
+    public void setOccupied(boolean occupied) {
+        isOccupied = occupied;
+    }
+
+    public ClientModel getClient() {
+        return client;
+    }
+
+    public void setClient(ClientModel client) {
+        this.client = client;
+    }
+
+    public String getClientCPF() {
+        return clientCPF;
+    }
+
+    public void setClientCPF(String clientCPF) {
+        this.clientCPF = clientCPF;
+    }
+
+    public Integer getNightlyRate() {
+        return nightlyRate;
+    }
+
+    public void setNightlyRate(Integer nightlyRate) {
+        this.nightlyRate = nightlyRate;
+    }
+
+    public Integer getServiceFee() {
+        return serviceFee;
+    }
+
+    public void setServiceFee(Integer serviceFee) {
+        this.serviceFee = serviceFee;
+    }
+
+    public Integer getPenthouseFee() {
+        return penthouseFee;
+    }
+
+    public void setPenthouseFee(Integer penthouseFee) {
+        this.penthouseFee = penthouseFee;
+    }
+
     public UUID getIdRoom() {
         return idRoom;
     }
@@ -67,3 +122,4 @@ public class RoomModel extends RepresentationModel<RoomModel> implements Seriali
         this.roomType = roomType;
     }
 }
+

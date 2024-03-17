@@ -8,4 +8,15 @@ public class RoomSimpleModel extends RoomModel {
     @Transient
     private String dtype;
 
+    private Integer nightlyRate = 100;
+
+    @Override
+    public Integer getNightlyRate() {
+        return nightlyRate;
+    }
+
+    @Override
+    public void setNightlyRate(Integer nightlyRate) {
+        this.nightlyRate = nightlyRate;
+    }
 }

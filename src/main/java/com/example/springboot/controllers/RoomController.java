@@ -2,7 +2,9 @@ package com.example.springboot.controllers;
 
 import com.example.springboot.dtos.RoomRecordDto;
 import com.example.springboot.factory.RoomCreateFactory;
+import com.example.springboot.models.ClientModel;
 import com.example.springboot.models.RoomModel;
+import com.example.springboot.repositories.ClientRepository;
 import com.example.springboot.repositories.RoomRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
@@ -27,25 +29,45 @@ public class RoomController {
     @Autowired
     private RoomCreateFactory roomCreateFactory;
 
-    @PostMapping("/rooms")
-    public ResponseEntity<RoomModel> createSimpleRoom(@RequestBody @Valid RoomRecordDto roomRecordDto) {
-        RoomModel roomModel = roomCreateFactory.createRoom(roomRecordDto);
+    @Autowired
+    ClientRepository clientRepository;
 
-        // Assuming successful room creation
+    @PostMapping("/rooms")
+    public ResponseEntity<?> createSimpleRoom(@RequestBody @Valid RoomRecordDto roomRecordDto) {
+        // Obtenha o nome do cliente e o CPF do RoomRecordDto
+        String clientName = roomRecordDto.clientName();
+        String clientCPF = roomRecordDto.clientCPF();
+
+        // Verifique se o cliente já está cadastrado no banco de dados
+        Optional<ClientModel> client = clientRepository.findByClientNameAndClientCPF(clientName, clientCPF);
+        if (client.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null); // Ou outra resposta adequada para o cliente não encontrado
+        }
+
+        // Verifique se o quarto está ocupado
+        Optional<RoomModel> occupiedRoom = roomRepository.findByNumberRoomAndIsOccupied(roomRecordDto.numberRoom(), true);
+        if (occupiedRoom.isPresent()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("O quarto já está ocupado."); // Ou outra resposta adequada para o quarto ocupado
+        }
+
+        // Crie o objeto RoomModel e associe o cliente a ele
+        RoomModel roomModel = roomCreateFactory.createRoom(roomRecordDto);
+        roomModel.setClient(client.get());
+        roomModel.setClientCPF(clientCPF);
+        roomModel.setOccupied(true); // Marque o quarto como ocupado
+
+        // Salve o quarto no banco de dados
+        roomModel = roomRepository.save(roomModel);
+
+        // Assumindo que o salvamento do quarto foi bem-sucedido
         if (roomModel != null) {
             return ResponseEntity.status(HttpStatus.CREATED).body(roomModel);
         } else {
-            // Handle potential room creation failure (optional)
+            // Lide com possíveis falhas na criação do quarto (opcional)
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
-//    @PostMapping("/rooms")
-//    public ResponseEntity<RoomModel> saveRoom(@RequestBody @Valid RoomRecordDto roomRecordDto) {
-//        var roomModel = new RoomModel();
-//        BeanUtils.copyProperties(roomRecordDto, roomModel);
-//        return ResponseEntity.status(HttpStatus.CREATED).body(roomRepository.save(roomModel));
-//    }
 
     @GetMapping("/rooms")
     public ResponseEntity<List<RoomModel>> getAllRooms() {
