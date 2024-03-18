@@ -10,4 +10,6 @@ import java.util.UUID;
 @Repository
 public interface RoomRepository extends JpaRepository <RoomModel, UUID>{
     Optional<RoomModel> findByNumberRoomAndIsOccupied(int numberRoom, boolean isOccupied);
+
+    Optional<RoomModel> findByNumberRoom(int numberRoom);
 }

@@ -68,6 +68,39 @@ public class RoomController {
         }
     }
 
+    @PutMapping("/rooms/{roomNumber}")
+    public ResponseEntity<?> assignClientToRoom(@PathVariable(value = "roomNumber") int roomNumber,
+                                                @RequestBody @Valid RoomRecordDto roomRecordDto) {
+        // Find the room to be updated
+        Optional<RoomModel> roomToUpdate = roomRepository.findByNumberRoom(roomNumber);
+        if (roomToUpdate.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Room not found.");
+        }
+
+        // Retrieve client information from the request body
+        String clientName = roomRecordDto.clientName();
+        String clientCPF = roomRecordDto.clientCPF();
+
+        // Validate client existence (optional: you can choose to create the client if not found)
+        Optional<ClientModel> client = clientRepository.findByClientNameAndClientCPF(clientName, clientCPF);
+        if (client.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Client not found.");
+        }
+
+        // Associate the client with the room and set check-in/check-out dates
+        RoomModel roomModel = roomToUpdate.get();
+        roomModel.setClient(client.get());
+        roomModel.setClientCPF(clientCPF);
+        roomModel.setClientName(clientName);
+        roomModel.setInDate(roomRecordDto.inDate());
+        roomModel.setOutDate(roomRecordDto.outDate());
+        roomModel.setOccupied(true);
+
+        // Save the updated room
+        roomRepository.save(roomModel);
+
+        return ResponseEntity.status(HttpStatus.OK).body("Client assigned to room successfully.");
+    }
 
     @GetMapping("/rooms")
     public ResponseEntity<List<RoomModel>> getAllRooms() {
@@ -91,16 +124,7 @@ public class RoomController {
         return ResponseEntity.status(HttpStatus.OK).body(room0.get());
     }
 
-    @PutMapping("/rooms/{id}")
-    public ResponseEntity<Object> updateRoom(@PathVariable(value = "id") UUID id, @RequestBody @Valid RoomRecordDto roomRecordDto) {
-        Optional<RoomModel> room0 = roomRepository.findById(id);
-        if (room0.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Room not found.");
-        }
-        var roomModel = room0.get();
-        BeanUtils.copyProperties(roomRecordDto, roomModel);
-        return ResponseEntity.status(HttpStatus.OK).body(roomRepository.save(roomModel));
-    }
+
 
     @DeleteMapping("/rooms/{id}")
     public ResponseEntity<Object> deleteRoom(@PathVariable(value = "id") UUID id) {
@@ -111,4 +135,31 @@ public class RoomController {
         roomRepository.deleteById(id);
         return ResponseEntity.status(HttpStatus.OK).body("Room deleted successfully");
     }
+
+
+    @DeleteMapping("/rooms/vacate/{roomNumber}")
+    public ResponseEntity<Object> vacateRoom(@PathVariable(value = "roomNumber") int roomNumber) {
+        Optional<RoomModel> roomToVacate = roomRepository.findByNumberRoom(roomNumber);
+        if (roomToVacate.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Room not found.");
+        }
+
+        RoomModel roomModel = roomToVacate.get();
+
+        // Clear client association and mark room as unoccupied
+        roomModel.setClient(null);
+        roomModel.setOutDate(null);
+        roomModel.setInDate(null);
+        roomModel.setClientCPF(null);
+        roomModel.setClientName(null);
+        roomModel.setOccupied(false);
+
+        // Update the room in the database
+        roomRepository.save(roomModel);
+
+        return ResponseEntity.status(HttpStatus.OK).body("Room " + roomNumber + " vacated successfully.");
+    }
+
+
+
 }
