@@ -10,6 +10,7 @@ LUMATI é um sistema desenvolvido para gerenciar quartos de um hotel. Este proje
 ## Tecnologias Utilizadas
 - Back-end: Spring Boot
 - Banco de Dados: Postgree
+- Front-end: https://github.com/lucasmanzato/FrontEnd_ProjFinal_POO2
 
 
 
