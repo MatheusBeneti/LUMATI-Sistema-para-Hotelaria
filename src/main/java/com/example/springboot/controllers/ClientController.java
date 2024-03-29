@@ -1,5 +1,7 @@
 package com.example.springboot.controllers;
 
+import com.example.springboot.builder.ClientBuilder;
+import com.example.springboot.builder.ClientBuilderImpl;
 import com.example.springboot.dtos.ClientRecordDto;
 import com.example.springboot.models.ClientModel;
 import com.example.springboot.repositories.ClientRepository;
@@ -8,8 +10,11 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -24,21 +29,38 @@ public class ClientController {
     ClientRepository clientRepository;
 
     @PostMapping("/clients")
-    public ResponseEntity<ClientModel> saveClient(@RequestBody @Valid ClientRecordDto clientRecordDto) {
+    public ResponseEntity<Object> saveClient(@RequestBody @Valid ClientRecordDto clientRecordDto, BindingResult bindingResult) {
 
-        // Verificar se o CPF já existe no banco de dados
-        if (clientRepository.existsByClientCPF(clientRecordDto.clientCPF())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(null);  // Ou outra resposta apropriada para o CPF já existente
+        // Verificação de erros de validação
+        if (bindingResult.hasErrors()) {
+            List<String> errors = new ArrayList<>();
+            for (FieldError error : bindingResult.getFieldErrors()) {
+                errors.add(error.getField() + ": " + error.getDefaultMessage());
+            }
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
         }
 
-        // Criar e salvar o objeto ClientModel
+        // Verificação de CPF já cadastrado
+        if (clientRepository.existsByClientCPF(clientRecordDto.clientCPF())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("CPF já cadastrado.");
+        }
+
+        // Criação do ClientRecordDto usando a interface builder
+        ClientBuilder builder = new ClientBuilderImpl();
+        ClientRecordDto clientRecordDtoFinal = builder.setClientName(clientRecordDto.clientName())
+                .setClientCPF(clientRecordDto.clientCPF())
+                .setClientBDay(clientRecordDto.clientBDay())
+                .build();
+
+        // Criar o ClientModel manualmente
         var clientModel = new ClientModel();
-        BeanUtils.copyProperties(clientRecordDto, clientModel);
+        clientModel.setClientBDay(clientRecordDtoFinal.clientBDay());
+        clientModel.setClientName(clientRecordDtoFinal.clientName());
+        clientModel.setClientCPF(clientRecordDtoFinal.clientCPF());
+
+        // Salvamento do ClientModel
         return ResponseEntity.status(HttpStatus.CREATED).body(clientRepository.save(clientModel));
     }
-
-
 
     @GetMapping("/clients")
     public ResponseEntity<List<ClientModel>> getAllClients() {
