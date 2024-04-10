@@ -25,7 +25,14 @@ public class RoomModel extends RepresentationModel<RoomModel> implements Seriali
     private String clientCPF;
     private ClientModel client;
     private boolean isOccupied = false;
+    private boolean cafeDaManha = true;
 
+    public Boolean getCafeDaManha() {
+        return cafeDaManha;
+    }
+    public void setCafeDaManha(Boolean cafeDaManha) {
+        this.cafeDaManha = cafeDaManha;
+    }
     public boolean isOccupied() {
         return isOccupied;
     }

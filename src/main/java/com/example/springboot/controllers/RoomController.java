@@ -1,5 +1,7 @@
 package com.example.springboot.controllers;
 
+import com.example.springboot.decorator.CafeDaManhaDecorator;
+import com.example.springboot.decorator.RoomDecorator;
 import com.example.springboot.dtos.RoomRecordDto;
 import com.example.springboot.factory.RoomCreateFactory;
 import com.example.springboot.models.ClientModel;
@@ -13,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.List;
@@ -33,10 +36,11 @@ public class RoomController {
     ClientRepository clientRepository;
 
     @PostMapping("/rooms")
-    public ResponseEntity<?> createSimpleRoom(@RequestBody @Valid RoomRecordDto roomRecordDto) {
+    public ResponseEntity<?> createRoom(@RequestBody @Valid RoomRecordDto roomRecordDto) {
         // Obtenha o nome do cliente e o CPF do RoomRecordDto
         String clientName = roomRecordDto.clientName();
         String clientCPF = roomRecordDto.clientCPF();
+        boolean clienteQuerCafeDaManha = roomRecordDto.cafeDaManha(); // Aqui obtemos a informação sobre o café da manhã
 
         // Verifique se o cliente já está cadastrado no banco de dados
         Optional<ClientModel> client = clientRepository.findByClientNameAndClientCPF(clientName, clientCPF);
@@ -56,6 +60,9 @@ public class RoomController {
         roomModel.setClientCPF(clientCPF);
         roomModel.setOccupied(true); // Marque o quarto como ocupado
 
+        System.out.println("Cafe da manha: " + clienteQuerCafeDaManha);
+        // Defina a preferência do café da manhã no modelo do quarto
+        roomModel.setCafeDaManha(clienteQuerCafeDaManha);
         // Salve o quarto no banco de dados
         roomModel = roomRepository.save(roomModel);
 
