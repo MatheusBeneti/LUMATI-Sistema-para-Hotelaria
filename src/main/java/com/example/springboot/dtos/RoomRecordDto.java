@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 
 
 public record RoomRecordDto(@NotBlank String clientName, @NotBlank String clientCPF, @NotBlank String inDate, @NotBlank String outDate, @NotNull
-                            Integer numberRoom, @NotBlank String roomType, @NotNull boolean isOccupied, @NotNull boolean cafeDaManha) {
+                            Integer numberRoom, @NotBlank String roomType, @NotNull boolean isOccupied
+        ,@NotNull boolean cafeDaManha, Integer nightlyRate, Integer serviceFee, Integer penthouseFee) {
 
 }

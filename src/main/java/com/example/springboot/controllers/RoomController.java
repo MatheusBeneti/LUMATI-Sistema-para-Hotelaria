@@ -60,9 +60,9 @@ public class RoomController {
         roomModel.setClientCPF(clientCPF);
         roomModel.setOccupied(true); // Marque o quarto como ocupado
 
-        System.out.println("Cafe da manha: " + clienteQuerCafeDaManha);
         // Defina a preferência do café da manhã no modelo do quarto
         roomModel.setCafeDaManha(clienteQuerCafeDaManha);
+
         // Salve o quarto no banco de dados
         roomModel = roomRepository.save(roomModel);
 
