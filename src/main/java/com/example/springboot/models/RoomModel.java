@@ -20,8 +20,8 @@ public class RoomModel extends RepresentationModel<RoomModel> implements Seriali
     private String inDate;
     private String outDate;
     private Integer nightlyRate = 0;
-    private Integer serviceFee = 0;
-    private Integer penthouseFee = 0;
+    private Integer serviceFee;
+    private Integer penthouseFee;
     private String clientCPF;
     private ClientModel client;
     private boolean isOccupied = false;

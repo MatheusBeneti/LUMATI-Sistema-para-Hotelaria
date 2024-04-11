@@ -28,23 +28,14 @@ public class RoomCreateFactory implements RoomFactory {
         switch (roomType){
             case "simple":
                 roomModel = new RoomSimpleModel();
-                roomModel.setNightlyRate(100);
-                roomModel.setServiceFee(0);
-                roomModel.setPenthouseFee(0);
                 BeanUtils.copyProperties(roomRecordDto, roomModel);
                 break;
             case "luxury":
                 roomModel = new RoomLuxuryModel();
-                roomModel.setNightlyRate(300);
-                roomModel.setServiceFee(20);
-                roomModel.setPenthouseFee(0);
                 BeanUtils.copyProperties(roomRecordDto, roomModel);
                 break;
             case "presidential":
                 roomModel = new RoomPresidentialModel();
-                roomModel.setNightlyRate(5);
-                roomModel.setServiceFee(20);
-                roomModel.setPenthouseFee(200);
                 BeanUtils.copyProperties(roomRecordDto, roomModel);
                 break;
             default:
@@ -54,7 +45,6 @@ public class RoomCreateFactory implements RoomFactory {
 
         // Lógica de salvamento no banco de dados
         RoomModel savedRoom = roomRepository.save(roomModel);
-
         return savedRoom;
     }
 }

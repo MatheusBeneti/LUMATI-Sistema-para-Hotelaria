@@ -63,6 +63,12 @@ public class RoomController {
         // Defina a preferência do café da manhã no modelo do quarto
         roomModel.setCafeDaManha(clienteQuerCafeDaManha);
 
+        // Se o cliente quiser café da manhã, aplique a decoração
+        if (clienteQuerCafeDaManha) {
+            RoomDecorator cafeDaManhaDecorator = new CafeDaManhaDecorator();
+            roomModel = cafeDaManhaDecorator.decorate(roomModel);
+        }
+
         // Salve o quarto no banco de dados
         roomModel = roomRepository.save(roomModel);
 
