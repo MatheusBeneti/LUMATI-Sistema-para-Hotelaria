@@ -1,4 +1,5 @@
 package com.example.springboot.models;
+import com.example.springboot.state.RoomState;
 import jakarta.persistence.*;
 import org.springframework.hateoas.RepresentationModel;
 
@@ -20,13 +21,22 @@ public class RoomModel extends RepresentationModel<RoomModel> implements Seriali
     private String inDate;
     private String outDate;
     private Integer nightlyRate = 0;
-    private Integer serviceFee;
-    private Integer penthouseFee;
+    private Integer serviceFee = 0;
+    private Integer penthouseFee = 0;
     private String clientCPF;
     private ClientModel client;
+    @Transient
+    private RoomState state;
     private boolean isOccupied = false;
     private boolean cafeDaManha = true;
 
+    public void setState(RoomState state) {
+        this.state = state;
+    }
+
+    public void handle() {
+        state.handle(this);
+    }
     public Boolean getCafeDaManha() {
         return cafeDaManha;
     }

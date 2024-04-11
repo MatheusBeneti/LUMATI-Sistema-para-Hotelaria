@@ -8,6 +8,8 @@ import com.example.springboot.models.ClientModel;
 import com.example.springboot.models.RoomModel;
 import com.example.springboot.repositories.ClientRepository;
 import com.example.springboot.repositories.RoomRepository;
+import com.example.springboot.state.AvailableState;
+import com.example.springboot.state.OccupiedState;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +60,8 @@ public class RoomController {
         RoomModel roomModel = roomCreateFactory.createRoom(roomRecordDto);
         roomModel.setClient(client.get());
         roomModel.setClientCPF(clientCPF);
-        roomModel.setOccupied(true); // Marque o quarto como ocupado
+        roomModel.setState(new OccupiedState());
+        roomModel.handle();
 
         // Defina a preferência do café da manhã no modelo do quarto
         roomModel.setCafeDaManha(clienteQuerCafeDaManha);
@@ -107,7 +110,6 @@ public class RoomController {
         roomModel.setClientName(clientName);
         roomModel.setInDate(roomRecordDto.inDate());
         roomModel.setOutDate(roomRecordDto.outDate());
-        roomModel.setOccupied(true);
 
         // Save the updated room
         roomRepository.save(roomModel);
@@ -165,7 +167,8 @@ public class RoomController {
         roomModel.setInDate(null);
         roomModel.setClientCPF(null);
         roomModel.setClientName(null);
-        roomModel.setOccupied(false);
+        roomModel.setState(new AvailableState());
+        roomModel.handle();
 
         // Update the room in the database
         roomRepository.save(roomModel);
