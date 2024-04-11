@@ -167,6 +167,7 @@ public class RoomController {
         roomModel.setInDate(null);
         roomModel.setClientCPF(null);
         roomModel.setClientName(null);
+        roomModel.setCafeDaManha(false);
         roomModel.setState(new AvailableState());
         roomModel.handle();
 
