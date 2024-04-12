@@ -17,10 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.List;
+import java.util.*;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -87,10 +84,24 @@ public class RoomController {
     @PutMapping("/rooms/{roomNumber}")
     public ResponseEntity<?> assignClientToRoom(@PathVariable(value = "roomNumber") int roomNumber,
                                                 @RequestBody @Valid RoomRecordDto roomRecordDto) {
+
         // Find the room to be updated
         Optional<RoomModel> roomToUpdate = roomRepository.findByNumberRoom(roomNumber);
         if (roomToUpdate.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Room not found.");
+        }
+
+        // Retrieve the room
+        RoomModel roomModel = roomToUpdate.get();
+
+        // Check if the room is occupied
+        if (roomModel.isOccupied()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Room is already occupied.");
+        }
+
+        // Check if the room type matches the old room type
+        if (!Objects.equals(roomModel.getRoomType(), roomRecordDto.roomType())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Room type cannot be changed.");
         }
 
         // Retrieve client information from the request body
@@ -102,20 +113,32 @@ public class RoomController {
         if (client.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Client not found.");
         }
+        boolean clienteQuerCafeDaManha = roomRecordDto.cafeDaManha();
 
         // Associate the client with the room and set check-in/check-out dates
-        RoomModel roomModel = roomToUpdate.get();
         roomModel.setClient(client.get());
         roomModel.setClientCPF(clientCPF);
         roomModel.setClientName(clientName);
         roomModel.setInDate(roomRecordDto.inDate());
         roomModel.setOutDate(roomRecordDto.outDate());
+        roomModel.setState(new OccupiedState());
+        roomModel.handle();
+
+        // Defina a preferência do café da manhã no modelo do quarto
+        roomModel.setCafeDaManha(clienteQuerCafeDaManha);
+
+        // Se o cliente quiser café da manhã, aplique a decoração
+        if (clienteQuerCafeDaManha) {
+            RoomDecorator cafeDaManhaDecorator = new CafeDaManhaDecorator();
+            roomModel = cafeDaManhaDecorator.decorate(roomModel);
+        }
 
         // Save the updated room
         roomRepository.save(roomModel);
 
         return ResponseEntity.status(HttpStatus.OK).body("Client assigned to room successfully.");
     }
+
 
     @GetMapping("/rooms")
     public ResponseEntity<List<RoomModel>> getAllRooms() {
