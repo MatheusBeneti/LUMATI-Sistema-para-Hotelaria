@@ -13,9 +13,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class RoomCreateFactory implements RoomFactory {
 
-    private final RoomRepository roomRepository;  // Suponha que você tenha um repositório para persistir os dados
+    private final RoomRepository roomRepository;
 
-    // Injeção de dependência do repositório
     public RoomCreateFactory(RoomRepository roomRepository) {
         this.roomRepository = roomRepository;
     }
@@ -42,8 +41,6 @@ public class RoomCreateFactory implements RoomFactory {
                 System.out.println("Opção não reconhecida.");
         }
 
-
-        // Lógica de salvamento no banco de dados
         RoomModel savedRoom = roomRepository.save(roomModel);
         return savedRoom;
     }

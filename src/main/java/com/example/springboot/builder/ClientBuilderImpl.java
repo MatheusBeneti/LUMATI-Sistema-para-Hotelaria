@@ -7,7 +7,6 @@ public class ClientBuilderImpl implements ClientBuilder{
     private String clientName;
     private String clientCPF;
 
-    // Setters para cada campo
     public ClientBuilderImpl setClientBDay(Integer clientBDay) {
         this.clientBDay = clientBDay;
         return this;
